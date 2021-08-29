@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">AudioTours</string>
+    <string name="step_one">Добро пожаловать в зимний дворец</string>
+    <string name="step_two">Приветствуем вас в Париже</string>
+    <string name="description_one">Зимний дворец – парадная резиденция дома Романовых, построенная в середине XVIII века в Санкт-Петербурге по приказу императрицы Елизаветы</string>
+    <string name="description_two">Париж - столица и крупнейший город Франции, расположенный в северной части страны на берегах реки Сены в центре региона Иль-де-Франс. </string>
+    <string name="audio_tour">Аудио-экскурсия</string>
+</resources>

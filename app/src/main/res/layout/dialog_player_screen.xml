@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_player"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingHorizontal="15dp"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="90dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="0dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/tw_information"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/bt_start_pause"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_play"
+        app:layout_constraintBottom_toBottomOf="@id/tw_information"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tw_information" />
+
+    <TextView
+        android:id="@+id/tw_information"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="20dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="2"
+        app:layout_constraintEnd_toStartOf="@id/bt_back"
+        app:layout_constraintStart_toEndOf="@id/bt_start_pause"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/description_one" />
+
+    <ImageButton
+        android:id="@+id/bt_back"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="25dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_back"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_start_pause"
+        app:layout_constraintEnd_toStartOf="@id/bt_forward"
+        app:layout_constraintTop_toTopOf="@+id/bt_start_pause" />
+
+    <ImageButton
+        android:id="@+id/bt_forward"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="15dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_forward"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bt_back" />
+
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="@string/audio_tour"
+        android:textColor="@color/gray"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tw_name_excursion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/text_view"
+        app:layout_constraintStart_toStartOf="@+id/text_view"
+        app:layout_constraintTop_toBottomOf="@+id/text_view"
+        tools:text="@string/app_name" />
+
+    <ImageButton
+        android:id="@+id/bt_stage_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@color/white"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_list"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tw_name_excursion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_view" />
+
+    <ImageButton
+        android:id="@+id/bt_start_pause_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:src="@drawable/ic_play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.3" />
+
+    <ImageButton
+        android:id="@+id/bt_back_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:src="@drawable/ic_back"
+        app:layout_constraintEnd_toStartOf="@+id/bt_start_pause_main"
+        app:layout_constraintTop_toTopOf="@+id/bt_start_pause_main" />
+
+    <ImageButton
+        android:id="@+id/bt_forward_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:src="@drawable/ic_forward"
+        app:layout_constraintStart_toEndOf="@+id/bt_start_pause_main"
+        app:layout_constraintTop_toTopOf="@+id/bt_start_pause_main" />
+
+    <TextView
+        android:id="@+id/tw_descriptions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_start_pause_main"
+        tools:text="@string/description_one" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
