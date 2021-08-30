@@ -48,19 +48,20 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val arg = requireArguments().getParcelable<Excursion>(KEY_EXCURSION_INSTANCE)
-        val bottomSheet = viewBinding!!.mainPlayer
+        val bottomSheet = viewBinding!!.containerMainPlayer
         val behavior = BottomSheetBehavior.from(bottomSheet)
+
         viewBinding!!.twNameExcursion.text = arg!!.name
         mediaPlayer = instanceMediaPlayer(arg.stepOne.audio)
 
         if (savedInstanceState != null) {
             val position = savedInstanceState.getInt(KEY_POSITION_SEEK_BAR)
-            restoreStateMediaPlayer(position)
+            restoreStateMediaPlayer(position, behavior)
         }
 
         initSeekBar()
         statePlayerScreen(behavior)
-        observeStageSelect()
+        observeStageSelect(behavior)
         reactionToTheChangeSeekBar()
 
         viewBinding!!.twInformation.setOnClickListener {
@@ -90,17 +91,23 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
         }
     }
 
-    private fun restoreStateMediaPlayer(position: Int) {
+    // observing lifecycle (ON_RESUME), because with an earlier callback,
+    // MediaPlayer.start() does not work
+    private fun restoreStateMediaPlayer(
+        position: Int,
+        behavior: BottomSheetBehavior<ConstraintLayout>
+    ) {
         lifecycle.addObserver(object : LifecycleEventObserver {
             override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
                 if (event == Lifecycle.Event.ON_RESUME) {
                     mediaPlayer!!.seekTo(position)
-                    playSound()
+                    behavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 }
             }
         })
     }
 
+    // reaction in the moving the slider seekBar
     private fun reactionToTheChangeSeekBar() {
         viewBinding!!.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -115,16 +122,17 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
     }
 
     private fun rewind() {
-        val rewind = mediaPlayer!!.currentPosition - 5000
+        val rewind = mediaPlayer!!.currentPosition - REWIND
         mediaPlayer!!.seekTo(rewind)
     }
 
     private fun fastForward() {
-        val fastForward = mediaPlayer!!.currentPosition + 5000
+        val fastForward = mediaPlayer!!.currentPosition + REWIND
         mediaPlayer!!.seekTo(fastForward)
     }
 
-    private fun observeStageSelect() {
+    // subscription to the choice of a new stage of the excursion
+    private fun observeStageSelect(behavior: BottomSheetBehavior<ConstraintLayout>) {
         sharedViewModel.currentStepLiveDate.observe(viewLifecycleOwner) { step ->
             mediaPlayer!!.release()
             setIconButtonPlay(true)
@@ -132,9 +140,11 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
             initSeekBar()
             viewBinding!!.twInformation.text = getString(step.description)
             viewBinding!!.twDescriptions.text = getString(step.description)
+            behavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
+    // changing the visibility of elements depending on the state screen
     private fun statePlayerScreen(behavior: BottomSheetBehavior<ConstraintLayout>) {
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {}
@@ -173,6 +183,7 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
         viewBinding!!.textView.isVisible = isVisible
     }
 
+    // changing the position SeekBar depending on the screen state
     private fun locationSeekBar(slideOffset: Float) {
         if (slideOffset > 0.7)
             paramsLocationSeekBar(R.id.bt_start_pause_main)
@@ -180,6 +191,7 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
             paramsLocationSeekBar(R.id.tw_information)
     }
 
+    // binding SeekBar to an element by id
     private fun paramsLocationSeekBar(@IdRes id: Int) {
         viewBinding!!.seekBar.layoutParams =
             Constraints.LayoutParams(0, 20.fromDpToPixels(requireContext())).apply {
@@ -189,6 +201,7 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
             }
     }
 
+    // changing icon, when playing music or pause
     private fun setIconButtonPlay(isIconPlay: Boolean) {
         val icon = if (isIconPlay)
             R.drawable.ic_play
@@ -215,19 +228,12 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
 
     private fun instanceMediaPlayer(@RawRes raw: Int): MediaPlayer {
         val player = MediaPlayer.create(requireContext(), raw)
-        player.setOnCompletionListener {
-            setIconButtonPlay(true)
-            mediaPlayer!!.reset()
-            executor!!.shutdown()
-            executor = null
-            runnable = null
-            viewBinding!!.seekBar.progress = 0
-            mediaPlayer = instanceMediaPlayer(raw)
-            initSeekBar()
-        }
+        player.isLooping = true
         return player
     }
 
+    // Creates a single-threaded executor that can schedule commands to run after a given delay
+    // then we create a thread in which we get the currentPosition in the mediaPlayer
     private fun initSeekBar() {
         executor = Executors.newSingleThreadScheduledExecutor()
         viewBinding!!.seekBar.max = mediaPlayer!!.duration / 1000
@@ -235,6 +241,12 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
             viewBinding!!.seekBar.progress = mediaPlayer!!.currentPosition / 1000
         }
         executor!!.scheduleAtFixedRate(runnable, 0, 1000, TimeUnit.MILLISECONDS)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer!!.pause()
+        setIconButtonPlay(true)
     }
 
     override fun onDestroyView() {
@@ -252,9 +264,11 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
     }
 
     companion object {
+        private const val REWIND = 5000
         private const val KEY_POSITION_SEEK_BAR = "positionSeekBar"
         private const val KEY_EXCURSION_INSTANCE = "excursionInstance"
 
+        // creating a new instance of the current fragment with arguments
         fun newInstance(instance: Excursion): PlayerScreenDialog {
             return PlayerScreenDialog().withArguments {
                 putParcelable(KEY_EXCURSION_INSTANCE, instance)

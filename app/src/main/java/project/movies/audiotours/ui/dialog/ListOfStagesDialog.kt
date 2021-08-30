@@ -40,8 +40,8 @@ class ListOfStagesDialog : BottomSheetDialogFragment() {
         viewBinding!!.twStepOne.text = getString(arg!!.stepOne.name)
         viewBinding!!.twStepTwo.text = getString(arg.stepTwo.name)
         viewBinding!!.twNameExcursion.text = arg.name
-        viewBinding!!.twStepOness.text = arg.stepOne.numberStep
-        viewBinding!!.twStepTwsso.text = arg.stepTwo.numberStep
+        viewBinding!!.twStepNumber1.text = arg.stepOne.numberStep
+        viewBinding!!.twStepNumber2.text = arg.stepTwo.numberStep
 
         viewBinding!!.twStepOne.setOnClickListener {
             sharedViewModel.getCurrentStep(arg.stepOne)
@@ -63,14 +63,14 @@ class ListOfStagesDialog : BottomSheetDialogFragment() {
         return dialog
     }
 
+    // setting the height of the dialog box according to the screen size
     private fun setupFullHeight(bottomSheetDialog: BottomSheetDialog) {
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet) as FrameLayout
         val behavior = BottomSheetBehavior.from(bottomSheet)
         val layoutParams = bottomSheet.layoutParams
-        val windowHeight = getWindowHeight()
         if (layoutParams != null) {
-            layoutParams.height = windowHeight
+            layoutParams.height = getWindowHeight()
         }
         bottomSheet.layoutParams = layoutParams
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -94,6 +94,7 @@ class ListOfStagesDialog : BottomSheetDialogFragment() {
     companion object {
         private const val KEY_EXCURSION_STAGE = "excursionStage"
 
+        // creating a new instance of the current fragment with arguments
         fun newInstance(instance: Excursion): ListOfStagesDialog {
             return ListOfStagesDialog().withArguments {
                 putParcelable(KEY_EXCURSION_STAGE, instance)

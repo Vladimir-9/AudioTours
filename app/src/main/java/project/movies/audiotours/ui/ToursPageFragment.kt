@@ -22,6 +22,7 @@ class ToursPageFragment : Fragment(R.layout.fragment_tours_page) {
     private fun loadImageTours(view: View, uri: String) {
         Glide.with(view)
             .load(uri)
+            .placeholder(R.drawable.ic_no_internet)
             .into(viewBinding?.ivTours!!)
     }
 

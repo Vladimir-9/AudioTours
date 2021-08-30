@@ -30,7 +30,7 @@
         tools:text="@string/app_name" />
 
     <TextView
-        android:id="@+id/tw_step_oness"
+        android:id="@+id/tw_step_number1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/tw_step_one"
@@ -39,7 +39,7 @@
         tools:text="1/10" />
 
     <TextView
-        android:id="@+id/tw_step_twsso"
+        android:id="@+id/tw_step_number2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@+id/tw_step_two"

@@ -26,12 +26,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             getString(excursion.stepOne.name),
             getString(excursion.stepOne.description)
         )
+
+        // triggered when the application is launched for the first time
         savedInstanceState ?: run {
             sharedViewModel.getCurrentStep(excursion.stepOne)
-            childFragmentManager.beginTransaction()
-                .replace(R.id.container_main, PlayerScreenDialog.newInstance(excursion))
-                .commit()
+            openFragment()
         }
+    }
+
+    private fun openFragment() {
+        childFragmentManager.beginTransaction()
+            .replace(R.id.container_main, PlayerScreenDialog.newInstance(excursion))
+            .commit()
     }
 
     private fun settingValuesInTheTW(name: String, description: String) {
@@ -39,6 +45,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         viewBinding!!.include.twDescription.text = description
     }
 
+    // subscription to the choice of a new stage of the excursion
     private fun observeStep() {
         sharedViewModel.currentStepLiveDate.observe(viewLifecycleOwner) { step ->
             initViewPager(step.listImageUrl)

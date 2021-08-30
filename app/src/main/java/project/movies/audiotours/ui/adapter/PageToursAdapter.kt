@@ -6,6 +6,7 @@ import project.movies.audiotours.ui.ToursPageFragment
 
 class PageToursAdapter(private val toursList: List<String>, fragment: Fragment) :
     FragmentStateAdapter(fragment) {
+
     override fun getItemCount() = toursList.size
 
     override fun createFragment(position: Int): Fragment {
