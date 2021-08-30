@@ -20,12 +20,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewBinding = FragmentMainBinding.bind(view)
-        initViewPager(excursion.stepOne.listImageUrl)
         observeStep()
-        settingValuesInTheTW(
-            getString(excursion.stepOne.name),
-            getString(excursion.stepOne.description)
-        )
 
         // triggered when the application is launched for the first time
         savedInstanceState ?: run {

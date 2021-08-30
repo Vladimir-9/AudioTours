@@ -50,16 +50,13 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
         val arg = requireArguments().getParcelable<Excursion>(KEY_EXCURSION_INSTANCE)
         val bottomSheet = viewBinding!!.containerMainPlayer
         val behavior = BottomSheetBehavior.from(bottomSheet)
-
         viewBinding!!.twNameExcursion.text = arg!!.name
-        mediaPlayer = instanceMediaPlayer(arg.stepOne.audio)
 
         if (savedInstanceState != null) {
             val position = savedInstanceState.getInt(KEY_POSITION_SEEK_BAR)
             restoreStateMediaPlayer(position, behavior)
         }
 
-        initSeekBar()
         statePlayerScreen(behavior)
         observeStageSelect(behavior)
         reactionToTheChangeSeekBar()
@@ -91,8 +88,8 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
         }
     }
 
-    // observing lifecycle (ON_RESUME), because with an earlier callback,
-    // MediaPlayer.start() does not work
+    // observing the lifecycle (ON_RESUME), because in the onViewCreated callback,
+    // the MediaPlayer don't created
     private fun restoreStateMediaPlayer(
         position: Int,
         behavior: BottomSheetBehavior<ConstraintLayout>
@@ -102,6 +99,8 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
                 if (event == Lifecycle.Event.ON_RESUME) {
                     mediaPlayer!!.seekTo(position)
                     behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                } else if (event == Lifecycle.Event.ON_STOP) {
+                    lifecycle.removeObserver(this)
                 }
             }
         })
@@ -134,7 +133,7 @@ class PlayerScreenDialog : BottomSheetDialogFragment() {
     // subscription to the choice of a new stage of the excursion
     private fun observeStageSelect(behavior: BottomSheetBehavior<ConstraintLayout>) {
         sharedViewModel.currentStepLiveDate.observe(viewLifecycleOwner) { step ->
-            mediaPlayer!!.release()
+            mediaPlayer?.release()
             setIconButtonPlay(true)
             mediaPlayer = instanceMediaPlayer(step.audio)
             initSeekBar()
