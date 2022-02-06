@@ -3,7 +3,21 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'me.moallemi.advanced-build-version'
 }
+
+advancedVersioning {
+    codeOptions {
+        versionCodeType 'AUTO_INCREMENT_STEP'
+        dependsOnTasks 'debug', 'release'
+    }
+    outputOptions {
+        renameOutput true
+        nameFormat '${appName}-${buildType}-${versionCode}'
+    }
+}
+
+advancedVersioning.renameOutputApk()
 
 android {
     compileSdk 30
@@ -12,7 +26,7 @@ android {
         applicationId "project.movies.audiotours"
         minSdk 22
         targetSdk 30
-        versionCode 1
+        versionCode advancedVersioning.versionCode
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
